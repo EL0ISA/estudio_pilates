@@ -1,0 +1,75 @@
+{% extends 'studio/base.html' %}
+
+{% block title %}Lista de Pagamentos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-money-check-alt me-2"></i>Pagamentos</h2>
+        <a href="{% url 'studio:registrar_pagamento' %}" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i> Novo Pagamento
+        </a>
+    </div>
+
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-md-3">
+            <label class="form-label">Método:</label>
+            <select name="metodo" class="form-select">
+                <option value="">-- Todos --</option>
+                <option value="PIX">PIX</option>
+                <option value="Cartão">Cartão</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Transferência">Transferência</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Data Inicial:</label>
+            <input type="date" name="data_inicial" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Data Final:</label>
+            <input type="date" name="data_final" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Aluno:</label>
+            <input type="text" name="aluno" placeholder="Nome do aluno" class="form-control">
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
+        </div>
+    </form>
+
+    {% if pagamentos %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Aluno</th>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Método</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pagamento in pagamentos %}
+                <tr>
+                    <td>{{ pagamento.id }}</td>
+                    <td>{{ pagamento.conta.aluno.nome }}</td>
+                    <td>{{ pagamento.data_pagamento|date:"d/m/Y" }}</td>
+                    <td>R$ {{ pagamento.valor }}</td>
+                    <td>{{ pagamento.metodo_pagamento }}</td>
+                    <td>{{ pagamento.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            Nenhum pagamento encontrado.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -30,6 +30,15 @@ urlpatterns = [
     path('planos/<int:id>/editar/', views.editar_plano, name='editar_plano'),
     path('planos/<int:id>/excluir/', views.excluir_plano, name='excluir_plano'),
 
+    # Contas a Receber
+    path('contas/', views.listar_contas, name='listar_contas'),  
+    path('contas/novo/', views.registrar_conta, name='registrar_conta'),
+    path('contas/editar/<int:pk>/', views.editar_conta, name='editar_conta'),
+
+    # Pagamentos
+    path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
+    path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
+
     #Login
     path('login/', StudioLoginView.as_view(), name='login'),
 

@@ -1,9 +1,6 @@
 # studio/forms.py
 from django import forms
-from .models import Servico
-from .models import Funcionario
-from .models import Aluno
-from .models import Plano
+from .models import Servico, Funcionario, Aluno, Plano, ContaReceber, Pagamento
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -86,6 +83,22 @@ class PlanoForm(forms.ModelForm):
     class Meta:
         model = Plano
         fields = ['codigo', 'nome', 'qtd_aulas', 'valor_aula', 'status', 'limite_vigencia']
+
+class ContaReceberForm(forms.ModelForm):
+    class Meta:
+        model = ContaReceber
+        fields = ['aluno', 'valor', 'vencimento', 'status']
+    aluno = forms.ModelChoiceField(queryset=Aluno.objects.all(), empty_label="Selecione o aluno", widget=forms.Select)
+
+class PagamentoForm(forms.ModelForm):
+    class Meta:
+        model = Pagamento
+        fields = ['conta', 'data_pagamento', 'metodo_pagamento']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtra apenas contas pendentes
+        self.fields['conta'].queryset = ContaReceber.objects.filter(status='pendente')
 
 class CustomLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

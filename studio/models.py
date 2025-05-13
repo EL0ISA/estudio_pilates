@@ -98,3 +98,43 @@ class Aluno(Pessoa):
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
+    
+class ContaReceber(models.Model):
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('pago', 'Pago'),
+    ]
+
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    valor = models.DecimalField(max_digits=8, decimal_places=2)
+    vencimento = models.DateField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pendente')
+
+    def __str__(self):
+        return f"Conta de {self.aluno} - {self.vencimento} - {self.status.upper()}"
+    
+    @property
+    def estado_atual(self):
+        if self.status == 'pago':
+            return 'Pago'
+        elif self.vencimento < date.today():
+            return 'Vencido'
+        else:
+            return 'Pendente'
+
+class Pagamento(models.Model):
+    METODOS = [
+        ('PIX', 'PIX'),
+        ('Cartão', 'Cartão'),
+        ('Dinheiro', 'Dinheiro'),
+        ('Transferência', 'Transferência'),
+    ]
+
+    conta = models.OneToOneField(ContaReceber, on_delete=models.CASCADE)
+    data_pagamento = models.DateField()
+    metodo_pagamento = models.CharField(max_length=20, choices=METODOS)
+    valor = models.DecimalField(max_digits=8, decimal_places=2)  # Mesmo tamanho da conta
+    status = models.CharField(max_length=20, default='Efetivado')
+
+    def __str__(self):
+        return f'Pagamento #{self.id} - {self.conta}'
