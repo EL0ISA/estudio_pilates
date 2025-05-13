@@ -3,7 +3,8 @@ from django import forms
 from .models import Servico, Funcionario, Aluno, Plano, ContaReceber, Pagamento
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML
+from crispy_bootstrap5.bootstrap5 import FloatingField 
  
 
 class ServicoForm(forms.ModelForm):
@@ -41,25 +42,64 @@ class ServicoFilterForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-class FuncionarioForm(forms.ModelForm):
-    from django import forms
-from .models import Funcionario
 
 class FuncionarioForm(forms.ModelForm):
-    senha = forms.CharField(widget=forms.PasswordInput(), required=False)
-
     class Meta:
         model = Funcionario
-        fields = ['nome', 'cpf', 'rg', 'telefone', 'email', 'data_nascimento', 'funcao', 'salario', 
-                  'carga_horaria', 'horarios_trabalho', 'login', 'senha', 'is_admin']
+        fields = '__all__'  
 
-    def save(self, commit=True):
-        funcionario = super().save(commit=False)
-        if self.cleaned_data['senha']:
-            funcionario.senha_hash = self.cleaned_data['senha']
-        if commit:
-            funcionario.save()
-        return funcionario
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.enctype = 'multipart/form-data'
+        self.helper.label_class = 'form-label'
+        self.helper.field_class = 'form-control'
+        self.helper.layout = Layout(
+
+            # Dados Pessoais
+            Fieldset(
+                "Dados Pessoais",
+                Row(
+                    Column('nome', css_class='col-md-6'),
+                    Column('cpf', css_class='col-md-6'),
+                    Column('data_nascimento', css_class='col-md-6'),
+                    Column('telefone', css_class='col-md-6'),
+                )
+            ),
+
+            # Dados Profissionais
+            Fieldset(
+                "Dados Profissionais",
+                Row(
+                    Column('funcao', css_class='col-md-6'),
+                    Column('carga_horaria', css_class='col-md-6'),
+                    Column('salario', css_class='col-md-6'),
+                    Column('data_contratacao', css_class='col-md-6'),
+                )
+            ),
+
+            # Acesso ao Sistema
+            Fieldset(
+                "Acesso ao Sistema",
+                Row(
+                    Column('login', css_class='col-md-6'),
+                    Column('senha_hash', css_class='col-md-6'),
+                    Column('is_admin', css_class='col-md-6'),
+                )
+            ),
+
+            # Horários e Observações
+            Fieldset(
+                "Horários de Trabalho",
+                'horarios_trabalho',
+                'observacoes'
+            ),
+
+            # Botão de envio (opcional — pode deixar no template)
+            Submit('submit', 'Salvar Funcionário', css_class='btn btn-primary mt-3')
+        )
 
 
 class AlunoForm(forms.ModelForm):

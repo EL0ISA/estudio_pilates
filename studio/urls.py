@@ -6,6 +6,14 @@ from .views import StudioLoginView
 app_name = 'studio'
 
 urlpatterns = [
+
+    #Login
+    
+    path('', StudioLoginView.as_view(), name='login'),
+
+    #home
+    path('home/', views.home, name='home'),
+
     # Serviços
     path('', views.lista_servicos, name='lista_servicos'), 
     path('novo/', views.novo_servico, name='novo_servico'),
@@ -13,7 +21,7 @@ urlpatterns = [
     path('excluir/<int:pk>/', views.excluir_servico, name='excluir_servico'),
 
     # Funcionario
-    path('funcionarios/', views.listar_funcionarios, name='listar_funcionarios'),
+    path('funcionarios/', views.listar_funcionario, name='listar_funcionario'),
     path('funcionarios/novo/', views.cadastro_funcionario, name='cadastro_funcionario'),
     path('funcionarios/editar/<int:id>/', views.editar_funcionario, name='editar_funcionario'),
     path('funcionarios/excluir/<int:id>/', views.excluir_funcionario, name='excluir_funcionario'),
@@ -41,5 +49,8 @@ urlpatterns = [
 
     #Login
     path('login/', StudioLoginView.as_view(), name='login'),
+
+    
+
 
 ]

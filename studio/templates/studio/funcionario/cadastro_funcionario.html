@@ -1,5 +1,7 @@
 {% extends 'studio/base.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block title %}Cadastrar Funcionário{% endblock %}
 
 {% block content %}
@@ -15,112 +17,9 @@
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
-                        <!-- Seção 1: Dados Pessoais -->
-                        <div class="mb-4">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-id-card me-2"></i>Dados Pessoais
-                            </h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="id_nome" class="form-label">Nome Completo</label>
-                                    {{ form.nome }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_cpf" class="form-label">CPF</label>
-                                    {{ form.cpf }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
-                                    {{ form.data_nascimento }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_telefone" class="form-label">Telefone</label>
-                                    {{ form.telefone }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção 2: Dados Profissionais -->
-                        <div class="mb-4">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-briefcase me-2"></i>Dados Profissionais
-                            </h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="id_funcao" class="form-label">Função</label>
-                                    {{ form.funcao }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_carga_horaria" class="form-label">Carga Horária Semanal (h)</label>
-                                    {{ form.carga_horaria }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_salario" class="form-label">Salário</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">R$</span>
-                                        {{ form.salario }}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_data_contratacao" class="form-label">Data de Contratação</label>
-                                    {{ form.data_contratacao }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção 3: Acesso ao Sistema -->
-                        <div class="mb-4">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-lock me-2"></i>Acesso ao Sistema
-                            </h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="id_login" class="form-label">Login</label>
-                                    {{ form.login }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="id_senha_hash" class="form-label">Senha</label>
-                                    {{ form.senha_hash }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Permissões</label>
-                                    <div class="form-check">
-                                        {{ form.is_admin }}
-                                        <label class="form-check-label" for="id_is_admin">Administrador</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção 4: Horários e Observações -->
-                        <div class="mb-4">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-clock me-2"></i>Horários de Trabalho
-                            </h5>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label for="id_horarios_trabalho" class="form-label">Horários (separados por vírgula)</label>
-                                    {{ form.horarios_trabalho }}
-                                    <small class="text-muted">Ex: "08:00-12:00,13:00-17:00"</small>
-                                </div>
-                                <div class="col-12">
-                                    <label for="id_observacoes" class="form-label">Observações</label>
-                                    {{ form.observacoes }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Botões de Ação -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'studio:cadastro_funcionario' %}" class="btn btn-secondary me-md-2">
-                                <i class="fas fa-times me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Salvar Funcionário
-                            </button>
-                        </div>
+                        {{ form|crispy }}
                     </form>
+                    
                 </div>
             </div>
         </div>

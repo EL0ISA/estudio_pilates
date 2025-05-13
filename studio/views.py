@@ -6,6 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Servico, Funcionario, Aluno, Plano, ContaReceber, Pagamento
 from .forms import ServicoForm, ServicoFilterForm, FuncionarioForm, AlunoForm, PlanoForm, ContaReceberForm, PagamentoForm
+from django.urls import reverse_lazy
 from .forms import CustomLoginForm
 
 
@@ -83,8 +84,8 @@ def cadastro_funcionario(request):
     return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
 
 
-def listar_funcionarios(request):
-    funcionarios = Funcionario.objects.all()
+def listar_funcionario(request):
+    funcionario = Funcionario.objects.all()
     return render(request, 'studio/funcionario/listar_funcionario.html', {'funcionario': funcionario})
 
 
@@ -270,6 +271,7 @@ def listar_pagamentos(request):
 class StudioLoginView(LoginView):
     template_name = 'studio/login.html'
     authentication_form = AuthenticationForm
+    next_page = reverse_lazy('home')
 
 def home(request):
-    return render(request, 'studio/login.html')
+    return render(request, 'studio/home.html')
