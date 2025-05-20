@@ -109,3 +109,5 @@ Thumbs.db
 # Docker
 docker-compose.yml
 dockerfile
+
+sonar-project.properties
