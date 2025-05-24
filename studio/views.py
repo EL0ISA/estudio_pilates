@@ -1,5 +1,6 @@
 # studio/views.py
 
+from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
@@ -12,8 +13,8 @@ from .models import Funcionario
 from .forms import FuncionarioForm 
 from .models import Aluno
 from .forms import AlunoForm 
-from .models import Plano, ContaReceber, Pagamento
-from .forms import PlanoForm, ContaReceberForm, PagamentoForm
+from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno
+from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlunoFrequenciaForm
 from .forms import CustomLoginForm
 
 
@@ -190,6 +191,83 @@ def excluir_plano(request, id):
     messages.success(request, "Plano excluído com sucesso!")
     return redirect('studio:listar_planos')
 
+
+# Views aula
+def listar_aulas(request):
+    aulas = Aula.objects.all()
+    return render(request, 'studio/aula/listar_aulas.html', {'aulas': aulas})
+
+
+def detalhes_aula(request, pk):
+    aula = get_object_or_404(Aula, pk=pk)
+    return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula})
+
+
+def frequencia_aula(request, pk):
+    aula = get_object_or_404(Aula, pk=pk)
+
+    if aula.cancelada:
+        messages.error(request, 'Não é possível marcar frequência em uma aula cancelada.')
+        return redirect('studio:detalhes_aula', pk=aula.pk)
+
+    AulaAlunoFormSet = modelformset_factory(
+        AulaAluno,
+        form=AulaAlunoFrequenciaForm,
+        extra=0  
+    )
+
+    queryset = AulaAluno.objects.filter(aula=aula)
+
+    if request.method == 'POST':
+        formset = AulaAlunoFormSet(request.POST, queryset=queryset)
+        if formset.is_valid():
+            formset.save()
+            return redirect('studio:detalhes_aula', pk=aula.pk)
+    else:
+        formset = AulaAlunoFormSet(queryset=queryset)
+
+    return render(request, 'studio/aula/frequencia_aula.html', {
+        'aula': aula,
+        'formset': formset,
+    })
+
+
+def cadastro_aula(request):
+    if request.method == 'POST':
+        form = AulaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('studio:listar_aulas')
+    else:
+        form = AulaForm()
+    return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
+
+
+def editar_aula(request, pk):
+    aula = get_object_or_404(Aula, pk=pk)
+    if aula.cancelada:
+            messages.error(request, 'Não é possível editar uma aula cancelada.')
+            return redirect('studio:detalhes_aula', pk=aula.pk)
+    if request.method == 'POST':
+        form = AulaForm(request.POST, instance=aula)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Aula atualizada com sucesso.')
+            return redirect('studio:detalhes_aula', pk=aula.pk)
+    else:
+        form = AulaForm(instance=aula)
+    return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
+
+
+def cancelar_aula(request, codigo):
+    aula = get_object_or_404(Aula, codigo=codigo)
+    aula.cancelada = True
+    aula.save()
+    messages.success(request, f'Aula {aula.codigo} foi cancelada com sucesso.')
+    return redirect('studio:listar_aulas')
+
+
+# Views contas/pagamentos
 def listar_contas(request):
     contas = ContaReceber.objects.all()  # Pega todas as contas a receber
     aluno_id = request.GET.get('aluno')

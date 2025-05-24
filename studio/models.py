@@ -97,7 +97,61 @@ class Aluno(Pessoa):
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
-    
+
+class Aula(models.Model):
+    # agendamento = models.OneToOneField(Agendamento, on_delete=models.CASCADE)  # aguardando implementação de agendamento
+    servicos = models.ManyToManyField(Servico)
+    codigo = models.AutoField(primary_key=True)
+    data = models.DateField()
+    horario = models.TimeField()
+    cancelada = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Aula {self.codigo} em {self.data} às {self.horario}'
+
+    def cancelar(self, motivo=None):
+        """Marca a aula como cancelada."""
+        self.cancelada = True
+        self.save()
+
+    # def gerar_participacoes(self):
+    #     """Cria entradas de AulaAluno para todos os alunos do agendamento."""
+    #     alunos = self.agendamento.alunos.all()
+    #     for aluno in alunos:
+    #         AulaAluno.objects.get_or_create(aula=self, aluno=aluno)
+
+    def alunos_confirmados(self):
+        return self.participacoes.filter(frequencia=True).values_list('aluno', flat=True)
+
+    def total_presentes(self):
+        return self.participacoes.filter(frequencia=True).count()
+
+    def total_ausentes(self):
+        return self.participacoes.filter(frequencia=False).count()
+
+    def lista_alunos(self):
+        return [p.aluno for p in self.participacoes.all()]
+
+
+class AulaAluno(models.Model):
+    aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='participacoes')
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    frequencia = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Aluno {self.aluno} na Aula {self.aula}'
+
+    def marcar_presenca(self):
+        self.frequencia = True
+        self.save()
+
+    def marcar_ausencia(self):
+        self.frequencia = False
+        self.save()
+
+    def status_presenca(self):
+        return 'Presente' if self.frequencia else 'Ausente'
+
 class ContaReceber(models.Model):
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),

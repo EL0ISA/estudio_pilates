@@ -1,0 +1,54 @@
+{% extends 'studio/base.html' %}
+
+{% block title %}Listar Aulas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Lista de Aulas</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aula in aulas %}
+                <tr>
+                    <td>{{ aula.codigo }}</td>
+                    <td>{{ aula.data }}</td>
+                    <td>{{ aula.horario }}</td>
+                    <td>
+                        <a href="{% url 'studio:detalhes_aula' aula.codigo %}" class="btn btn-info btn-sm me-1">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        {% if aula.cancelada %}
+                            <span class="badge bg-danger">Cancelada</span>
+                        {% else %}
+                            <a href="{% url 'studio:editar_aula' aula.codigo %}" class="btn btn-warning btn-sm me-1">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'studio:cancelar_aula' aula.codigo %}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja cancelar esta aula?');">
+                                <i class="fas fa-times-circle"></i> Cancelar
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Nenhuma aula cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <a href="{% url 'studio:cadastro_aula' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Nova Aula
+        </a>
+    </div>
+</div>
+{% endblock %}

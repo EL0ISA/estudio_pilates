@@ -1,0 +1,54 @@
+{% extends 'studio/base.html' %}
+
+{% block title %}Detalhes da Aula{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">
+                <i class="fas fa-info-circle me-2"></i>Detalhes da Aula {{ aula.codigo }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Data:</strong> {{ aula.data }}</p>
+            <p><strong>Horário:</strong> {{ aula.horario }}</p>
+            <p><strong>Serviços:</strong></p>
+            <ul>
+                {% for servico in aula.servicos.all %}
+                    <li>{{ servico.modalidade }} ({{ servico.niveis_dificuldade }})</li>
+                {% empty %}
+                    <li>Sem serviços vinculados</li>
+                {% endfor %}
+            </ul>
+
+            {% if aula.cancelada %}
+                <div class="alert alert-danger mt-3">
+                    Esta aula foi cancelada.
+                </div>
+            {% endif %}
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                {% if aula.cancelada %}
+                    <span class="badge bg-danger">Cancelada</span>
+                {% else %}
+                    <a href="{% url 'studio:frequencia_aula' aula.codigo %}" class="btn btn-success me-md-2">
+                        <i class="fas fa-user-check"></i> Marcar Frequência
+                    </a>
+                    <a href="{% url 'studio:editar_aula' aula.codigo %}" class="btn btn-warning me-md-2">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'studio:cancelar_aula' aula.codigo %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja cancelar esta aula?');">
+                        <i class="fas fa-times-circle"></i> Cancelar Aula
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a href="{% url 'studio:listar_aulas' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Lista
+        </a>
+    </div>
+</div>
+{% endblock %}

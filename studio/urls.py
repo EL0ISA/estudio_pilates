@@ -41,6 +41,14 @@ urlpatterns = [
     #Login
     path('login/', StudioLoginView.as_view(), name='login'),
 
+    # Aula
+    path('aulas/', views.listar_aulas, name='listar_aulas'),
+    path('aulas/cadastrar/', views.cadastro_aula, name='cadastro_aula'),
+    path('aulas/<int:pk>/', views.detalhes_aula, name='detalhes_aula'),
+    path('aulas/<int:pk>/editar/', views.editar_aula, name='editar_aula'),
+    path('aulas/<int:pk>/frequencia/', views.frequencia_aula, name='frequencia_aula'),
+    path('aulas/cancelar/<int:codigo>/', views.cancelar_aula, name='cancelar_aula'),
+
     #Contas a receber
     path('contas/', views.listar_contas, name='listar_contas'),  
     path('contas/novo/', views.registrar_conta, name='registrar_conta'),

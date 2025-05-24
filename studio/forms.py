@@ -3,11 +3,13 @@ from django import forms
 from .models import Servico
 from .models import Funcionario
 from .models import Aluno
-from .models import Plano, ContaReceber, Pagamento
+from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField 
+from django.utils import timezone
+from datetime import date, datetime
 
  
 
@@ -151,6 +153,48 @@ class CustomLoginForm(AuthenticationForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('login', 'Entrar', css_class='btn btn-primary w-100'))
+
+class AulaForm(forms.ModelForm):
+    class Meta:
+        model = Aula
+        fields = ['data', 'horario', 'servicos']
+        widgets = {
+            'data': forms.DateInput(
+                attrs={'type': 'date', 'min': date.today().isoformat()}
+            ),
+            'horario': forms.TimeInput(attrs={'type': 'time'}),
+            'servicos': forms.CheckboxSelectMultiple(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            # Formato ISO para input date
+            self.initial['data'] = self.instance.data.strftime('%Y-%m-%d')
+            self.initial['horario'] = self.instance.horario.strftime('%H:%M')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get('data')
+        horario = cleaned_data.get('horario')
+
+        if data and horario:
+            data_hora = datetime.combine(data, horario)
+            if timezone.is_naive(data_hora):
+                data_hora = timezone.make_aware(data_hora)
+
+            agora = timezone.now()
+
+            if data_hora < agora:
+                raise forms.ValidationError('Não é possível agendar aulas para datas/horários passados.')
+
+class AulaAlunoFrequenciaForm(forms.ModelForm):
+    class Meta:
+        model = AulaAluno
+        fields = ['frequencia']
+        widgets = {
+            'frequencia': forms.CheckboxInput(),
+        }
 
 class ContaReceberForm(forms.ModelForm):
     class Meta:
