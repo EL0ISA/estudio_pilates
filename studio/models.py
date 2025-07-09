@@ -56,11 +56,12 @@ class Funcionario(Pessoa):
     def autenticar(self, senha: str) -> bool:
         return check_password(senha, self.senha)
 
-    # Vai calcular a carga horária a partir da quantidade de horários no array, e dps multiplica pelos dias da semana, retornando a carga horária semanal.
+    # Vai calcular a Carga Horária a partir da quantidade de horários no array, e dps multiplica pelos dias da semana, retornando a carga horária semanal.
     def gerar_carga_horaria(self, horarios_trabalho: list) -> int:
         return len(horarios_trabalho) * 5 
     
     # Altera a carga horária com base nas horas extras trabalhadas
+        # aaaaaaaaaa555
     def alterar_carga_horaria(self, horas_extras: float = 0.0) -> float:
         self.carga_horaria += horas_extras
         self.save()  # Salva automaticamente no banco de dados
