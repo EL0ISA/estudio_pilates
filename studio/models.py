@@ -254,7 +254,7 @@ class Agendamento(models.Model):
     )
     data_agendamento = models.DateTimeField(auto_now_add=True)
     cancelado = models.BooleanField(default=False)
-    motivo_cancelamento = models.TextField(blank=True)
+    motivo_cancelamento = models.TextField(null=True, blank=True)
 
 
     class Meta:
