@@ -15,18 +15,7 @@ Horários Disponíveis{% endblock %} {% block content %}
     </a>
   </div>
 
-  {% if messages %}
-  <ul class="messages list-unstyled mb-3">
-    {% for message in messages %}
-    <li
-      class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
-      role="alert"
-    >
-      {{ message }}
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %} {% if horarios %}
+ {% if horarios %}
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for horario in horarios %}
     <div class="col">
