@@ -4,14 +4,6 @@
 
 {% block content %}
 <div class="container mt-4">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
 
     <h2 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Lista de Aulas</h2>
 
@@ -69,11 +61,18 @@
                             <a href="{% url 'studio:editar_aula' aula.codigo %}" class="btn btn-warning btn-sm me-1">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{% url 'studio:cancelar_aula' aula.codigo %}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja cancelar esta aula?');">
+                            <form action="{% url 'studio:cancelar_aula' aula.codigo %}" method="post" class="d-inline" >
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-times-circle"></i> Cancelar Aula
+                                <button
+                                type="button"
+                                class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmDeleteModal"
+                                data-url="{% url 'studio:cancelar_aula' aula.codigo %}"
+                                data-nome="Aula {{ aula.codigo }} - {{ aula.data }} {{ aula.horario }}">
+                                <i class="fas fa-times-circle"></i> Cancelar Aula
                                 </button>
+
                             </form>
                         {% endif %}
                     </td>
@@ -93,4 +92,44 @@
         </a>
     </div>
 </div>
+{% endblock %}
+{% block extra_js %}
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <form id="deleteForm" method="post">
+        {% csrf_token %}
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Cancelamento</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja realmente cancelar <strong id="modal-item-name"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Sim, cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var confirmModal = document.getElementById('confirmDeleteModal');
+
+    confirmModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var url = button.getAttribute('data-url');
+        var nome = button.getAttribute('data-nome');
+
+        var modalTitle = confirmModal.querySelector('#modal-item-name');
+        modalTitle.textContent = nome || '';
+
+        var form = confirmModal.querySelector('#deleteForm');
+        form.setAttribute('action', url);
+    });
+});
+</script>
 {% endblock %}

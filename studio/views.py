@@ -22,6 +22,7 @@ from datetime import date, datetime, timedelta
 from django.utils import timezone
 from django.views import View
 from django.http import HttpResponseNotAllowed
+from django.db.models import ProtectedError
 
 
 LISTAR_SERVICOS = 'studio:lista_servicos'
@@ -136,9 +137,12 @@ def editar_funcionario(request, id):
 @require_POST
 def excluir_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
-    funcionario.delete()
-    messages.success(request, "Funcionário excluído com sucesso!")
-    return redirect(LISTAR_FUNCIONARIO)
+    try:
+        funcionario.delete()
+        messages.success(request, "Funcionário excluído com sucesso!")
+    except ProtectedError:
+        messages.error(request, f"Não é possível excluir o funcionário '{funcionario.nome}' porque ele está vinculado a uma ou mais aulas.")
+    return redirect('studio:listar_funcionario')
 
 
 # View Aluno

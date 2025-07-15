@@ -12,15 +12,6 @@
         </a>
     </div>
 
-    {% if messages %}
-    <ul class="messages list-unstyled mb-3">
-        {% for message in messages %}
-        <li class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
-            {{ message }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
 
     <form method="get" action="" class="mb-4">
         <div class="row g-3 align-items-end">
