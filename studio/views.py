@@ -785,9 +785,9 @@ def home(request):
 
     proximos_agendamentos_hoje = Agendamento.objects.filter(
         horario_disponivel__data=hoje,
-        horario_disponivel__horario_inicio__gte=agora.time(),
         cancelado=False
-    ).select_related('aluno', 'horario_disponivel__funcionario').order_by('horario_disponivel__horario_inicio')
+    ).select_related('aluno', 'horario_disponivel__funcionario'
+    ).order_by('horario_disponivel__horario_inicio')
 
     aniversariantes_mes = Aluno.objects.filter(
         data_nascimento__month=hoje.month,
