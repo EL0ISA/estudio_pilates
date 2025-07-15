@@ -17,7 +17,7 @@
     <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card shadow-sm h-100 border-info">
             <div class="card-body text-center">
-                <h6 class="card-subtitle text-muted">Aulas com Vagas</h6>
+                <h6 class="card-subtitle text-muted">Aulas com Vagas Hoje</h6>
                 <p class="card-text display-4 fw-bold text-info">
                     {{ dashboard_data.aulas_com_vagas }}
                 </p>
@@ -37,7 +37,7 @@
     <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card shadow-sm h-100 border-danger">
             <div class="card-body text-center">
-                <h6 class="card-subtitle text-muted">Contas a Receber</h6>
+                <h6 class="card-subtitle text-muted">Contas a Receber na Semana</h6>
                 <p class="card-text display-6 fw-bold text-danger">
                     R$ {{ dashboard_data.contas_a_receber|floatformat:2 }}
                 </p>
@@ -82,7 +82,7 @@
     </div>
 
     <div class="col-lg-6">
-        <div class="d-flex flex-column h-100">
+        <div class="d-flex flex-column ">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-info text-white">
                     <h5 class="card-title mb-0">Aniversariantes do Mês</h5>
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm mt-auto">
+            <div class="card shadow-sm">
                 <div class="card-header bg-warning text-dark">
                     <h5 class="card-title mb-0">Alertas Financeiros</h5>
                 </div>
