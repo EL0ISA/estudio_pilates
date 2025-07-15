@@ -274,14 +274,17 @@
 
     <main class="container-fluid main-content">
       {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
-          {{ message }}
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %} 
+  <ul class="messages">
+    {% for message in messages %}
+      {% if 'error' in message.tags %}
+        <li class="alert alert-danger">{{ message }}</li>
+      {% else %}
+        <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endif %}
+
       {% block content %} {% endblock %}
     </main>
 
